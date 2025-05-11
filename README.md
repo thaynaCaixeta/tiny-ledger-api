@@ -4,7 +4,7 @@
 * Record money movements (deposit / withdraw)
 * View transaction history
 
-## Project Design
+## Project Structure
 ```
 com.tackr.tinyledger.api
     ├── controller     // REST endpoints
