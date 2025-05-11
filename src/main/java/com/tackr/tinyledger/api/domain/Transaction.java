@@ -8,8 +8,8 @@ import java.util.UUID;
 
 @Getter
 public class Transaction {
-    /*
-         Why choosing this design?
+    /**
+         @implNote Why choosing this design?
          By having all the fields defined as final and only being modified in the constructor we can mimic immutability
      */
     private final UUID id; // Prevents potential collisions or manual ID insertion
