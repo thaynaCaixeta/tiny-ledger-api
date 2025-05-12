@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface LedgerRepository {
 
-    void save(Transaction transaction);
+    void save(Transaction transaction, BigDecimal updatedBalance);
 
     BigDecimal getBalance();
 

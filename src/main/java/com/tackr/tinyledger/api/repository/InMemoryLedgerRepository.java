@@ -22,9 +22,9 @@ public class InMemoryLedgerRepository implements LedgerRepository {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @Override
-    public void save(Transaction transaction) {
+    public synchronized void save(Transaction transaction, BigDecimal updatedBalance) {
         transactions.add(transaction);
-        updateBalance(transaction);
+        this.balance = updatedBalance;
     }
 
     @Override
@@ -46,15 +46,5 @@ public class InMemoryLedgerRepository implements LedgerRepository {
     void clear() {
         transactions.clear();
         balance = BigDecimal.ZERO;
-    }
-
-    private void updateBalance(Transaction transaction) {
-        if (transaction.getType() == TransactionType.DEPOSIT) {
-            balance = balance.add(transaction.getAmount());
-        }
-
-        else if (transaction.getType() == TransactionType.WITHDRAW) {
-            balance = balance.subtract(transaction.getAmount());
-        }
     }
 }

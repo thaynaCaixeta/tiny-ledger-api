@@ -22,23 +22,27 @@ class InMemoryLedgerRepositoryTest {
     @Test
     void shouldSaveTransactionAndUpdateBalance() {
         Transaction transaction = new Transaction(TransactionType.DEPOSIT, new BigDecimal("100.58"));
-        repository.save(transaction);
+        BigDecimal updatedBalance = new BigDecimal("120.58");
+        repository.save(transaction, updatedBalance);
 
-        assertEquals(new BigDecimal("100.58"), repository.getBalance());
+        assertEquals(new BigDecimal("120.58"), repository.getBalance());
         assertEquals(1, repository.findAll().size());
     }
 
     @Test
     void shouldSubtractFromBalanceOnWithdraw() {
-        repository.save(new Transaction(TransactionType.DEPOSIT, new BigDecimal("97.45")));
-        repository.save(new Transaction(TransactionType.WITHDRAW, new BigDecimal("47.45")));
+        repository.save(new Transaction(TransactionType.DEPOSIT, new BigDecimal("97.45")),
+                new BigDecimal("97.45"));
+
+        repository.save(new Transaction(TransactionType.WITHDRAW, new BigDecimal("47.45")),
+                new BigDecimal("50.00"));
 
         assertEquals(new BigDecimal("50.00"), repository.getBalance());
     }
 
     @Test
     void shouldReturnImmutableTransactionList() {
-        repository.save(new Transaction(TransactionType.DEPOSIT, new BigDecimal("65.00")));
+        repository.save(new Transaction(TransactionType.DEPOSIT, new BigDecimal("65.00")), new BigDecimal("65.00"));
 
         List<Transaction> transactions = repository.findAll();
         assertThrows(UnsupportedOperationException.class, () -> transactions.add(null));
@@ -46,7 +50,8 @@ class InMemoryLedgerRepositoryTest {
 
     @Test
     void shouldClearRepository() {
-        repository.save(new Transaction(TransactionType.DEPOSIT, new BigDecimal("500.00")));
+        repository.save(new Transaction(TransactionType.DEPOSIT,
+                new BigDecimal("500.00")), new BigDecimal("500.00"));
         repository.clear();
 
         assertEquals(BigDecimal.ZERO, repository.getBalance());
@@ -55,6 +60,6 @@ class InMemoryLedgerRepositoryTest {
 
     @Test
     void shouldRejectNullTransaction() {
-        assertThrows(NullPointerException.class, () -> repository.save(null));
+        assertThrows(NullPointerException.class, () -> repository.save(null, BigDecimal.ZERO));
     }
 }
