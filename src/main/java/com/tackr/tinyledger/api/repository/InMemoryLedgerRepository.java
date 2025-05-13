@@ -23,6 +23,12 @@ public class InMemoryLedgerRepository implements LedgerRepository {
 
     @Override
     public synchronized void save(Transaction transaction, BigDecimal updatedBalance) {
+        if (transaction == null) {
+            throw new IllegalArgumentException("transaction must not be null");
+        }
+        if (updatedBalance == null) {
+            throw new IllegalArgumentException("updatedBalance must not be null");
+        }
         transactions.add(transaction);
         this.balance = updatedBalance;
     }
@@ -34,7 +40,7 @@ public class InMemoryLedgerRepository implements LedgerRepository {
 
     @Override
     public synchronized List<Transaction> findAll() {
-        // Note: The copyOf method returns an unmodified list
+        // Note: The use of the copyOf method here is justified by its characteristic of returning an unmodified list
         return List.copyOf(transactions);
     }
 
