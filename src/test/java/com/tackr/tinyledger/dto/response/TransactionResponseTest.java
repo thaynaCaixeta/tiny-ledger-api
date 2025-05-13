@@ -1,6 +1,7 @@
 package com.tackr.tinyledger.dto.response;
 
 import com.tackr.tinyledger.domain.TransactionType;
+import com.tackr.tinyledger.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ class TransactionResponseTest {
     void shouldHoldTransactionDataCorrectly() {
         TransactionType type = TransactionType.WITHDRAW;
         BigDecimal amount = new BigDecimal("200.13");
-        LocalDateTime timestamp = LocalDateTime.now();
+        String timestamp = DateUtils.toCustomFormat(LocalDateTime.now());
 
         TransactionResponse response = new TransactionResponse(type, amount, timestamp);
 

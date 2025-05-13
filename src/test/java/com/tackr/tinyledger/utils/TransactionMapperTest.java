@@ -19,7 +19,7 @@ class TransactionMapperTest {
 
         assertEquals(transaction.getType(), response.type());
         assertEquals(transaction.getAmount(), response.amount());
-        assertEquals(transaction.getTimestamp(), response.timestamp());
+        assertEquals(DateUtils.toCustomFormat(transaction.getTimestamp()), response.timestamp());
     }
 
     @Test

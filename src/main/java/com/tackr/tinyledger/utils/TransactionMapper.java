@@ -10,7 +10,7 @@ public class TransactionMapper {
         return new TransactionResponse(
                 transaction.getType(),
                 transaction.getAmount(),
-                transaction.getTimestamp()
+                DateUtils.toCustomFormat(transaction.getTimestamp())
         );
     }
 

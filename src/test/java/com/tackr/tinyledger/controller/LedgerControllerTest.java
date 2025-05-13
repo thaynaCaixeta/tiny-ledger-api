@@ -6,6 +6,7 @@ import com.tackr.tinyledger.dto.request.TransactionRequest;
 import com.tackr.tinyledger.dto.response.BalanceResponse;
 import com.tackr.tinyledger.dto.response.TransactionResponse;
 import com.tackr.tinyledger.service.LedgerService;
+import com.tackr.tinyledger.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ class LedgerControllerTest {
     @Test
     void shouldReturn201WhenRegisteringTransaction() throws Exception {
         TransactionResponse expectedResponse =
-                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("150.00"), LocalDateTime.now());
+                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("150.00"), DateUtils.toCustomFormat(LocalDateTime.now()));
         BDDMockito.given(ledgerService.processAndReturnTransaction(any())).willReturn(expectedResponse);
 
         TransactionRequest request = new TransactionRequest();
@@ -54,7 +55,7 @@ class LedgerControllerTest {
     }
 
     @Test
-    void shouldReturn400WhenInvalidTransactionIsSent() throws Exception {
+    void shouldReturn400WhenInvalidTransactionRequestIsSent() throws Exception {
         TransactionRequest invalidRequest = new TransactionRequest();
 
         mockMvc.perform(post("/api/v1/ledger/transaction")
@@ -66,10 +67,10 @@ class LedgerControllerTest {
     @Test
     void shouldReturnTransactionHistory() throws Exception {
         List<TransactionResponse> history = List.of(
-                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("185.90"), LocalDateTime.now()));
+                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("185.90"), DateUtils.toCustomFormat(LocalDateTime.now())));
         BDDMockito.given(ledgerService.getTransactionHistory()).willReturn(history);
 
-        mockMvc.perform(get("/api/v1/ledger/transactions"))
+        mockMvc.perform(get("/api/v1/ledger/transaction/history"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].type").value("DEPOSIT"));

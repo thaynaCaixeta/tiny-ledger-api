@@ -27,13 +27,13 @@ public class LedgerService {
 
         BigDecimal currentBalance = repository.getBalance();
 
-        if (!hasEnoughBalance(requestType, currentBalance, requestAmount)) {
+        if (!hasEnoughBalance(request, currentBalance)) {
             throw new IllegalArgumentException("Transaction rejected: insufficient funds");
         }
 
         Transaction newTransaction = new Transaction(requestType, requestAmount);
+        BigDecimal updatedBalance = calculateNewBalance(request, currentBalance);
 
-        BigDecimal updatedBalance = calculateNewBalance(requestType, requestAmount, currentBalance);
         repository.save(newTransaction, updatedBalance);
 
         return TransactionMapper.toTransactionResponse(newTransaction);
@@ -50,14 +50,14 @@ public class LedgerService {
                 .toList();
     }
 
-    private boolean hasEnoughBalance(TransactionType type, BigDecimal currentBalance, BigDecimal requestAmount) {
-        return type != TransactionType.WITHDRAW || currentBalance.subtract(requestAmount).compareTo(BigDecimal.ZERO) >= 0;
+    private boolean hasEnoughBalance(TransactionRequest request, BigDecimal currentBalance) {
+        return request.getType() == TransactionType.DEPOSIT || currentBalance.subtract(request.getAmount()).compareTo(BigDecimal.ZERO) >= 0;
     }
 
-    private BigDecimal calculateNewBalance(TransactionType requestType, BigDecimal requestAmount, BigDecimal currentBalance) {
-        return switch (requestType) {
-            case DEPOSIT -> currentBalance.add(requestAmount);
-            case WITHDRAW -> currentBalance.subtract(requestAmount);
+    private BigDecimal calculateNewBalance(TransactionRequest request, BigDecimal currentBalance) {
+        return switch (request.getType()) {
+            case DEPOSIT -> currentBalance.add(request.getAmount());
+            case WITHDRAW -> currentBalance.subtract(request.getAmount());
         };
     }
 

@@ -39,14 +39,18 @@ public class LedgerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/transactions")
+    @Operation(
+            summary = "Retrieve the transactions history",
+            description = "Returns a list of all transactions registered in the ledger"
+    )
+    @GetMapping("/transaction/history")
     public ResponseEntity<List<TransactionResponse>> retrieveHistory() {
         return ResponseEntity.ok(ledgerService.getTransactionHistory());
     }
 
     @Operation(
-            summary = "Retrieve the transactions history",
-            description = "Returns a list of all transactions registered in the ledger"
+            summary = "Retrieve the account balance",
+            description = "Returns the total balance of the ledger account"
     )
     @GetMapping("/balance")
     public ResponseEntity<BalanceResponse> retrieveBalance() {

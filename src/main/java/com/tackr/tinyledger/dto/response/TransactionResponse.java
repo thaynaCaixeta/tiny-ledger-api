@@ -15,8 +15,7 @@ public record TransactionResponse(
         @Schema(description = "Amount of the registered transaction", example = "85.00")
         BigDecimal amount,
 
+        @Schema(description = "Date and time of when the transaction was recorded", example = "12-07-2024 12:42:00")
         @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-
-        @Schema(description = "Date and time of when the transaction was recorded")
-        LocalDateTime timestamp
+        String timestamp
 ) {}
