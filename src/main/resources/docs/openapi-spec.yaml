@@ -1,0 +1,90 @@
+openapi: 3.0.1
+info:
+  title: Tiny Ledger API
+  description: API for managing simple deposit and withdrawal transactions
+  version: 1.0.0
+paths:
+  /api/v1/ledger/transactions:
+    post:
+      summary: Create a transaction
+      description: Records a deposit or withdrawal and returns the transaction data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+            example:
+              type: DEPOSIT
+              amount: 100.0
+      responses:
+        '201':
+          description: Transaction successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Invalid input or insufficient funds
+    get:
+      summary: Get transaction history
+      description: Returns a list of all transactions in the ledger
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionResponse'
+  /api/v1/ledger/balance:
+    get:
+      summary: Get current balance
+      description: Returns the current balance of the ledger
+      responses:
+        '200':
+          description: Current balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+components:
+  schemas:
+    TransactionType:
+      type: string
+      enum:
+      - DEPOSIT
+      - WITHDRAWAL
+    TransactionRequest:
+      type: object
+      required:
+      - type
+      - amount
+      properties:
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        amount:
+          type: number
+          format: decimal
+          example: 100.0
+    TransactionResponse:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        amount:
+          type: number
+          format: decimal
+          example: 50.0
+        timestamp:
+          type: string
+          format: date-time
+          example: '2025-05-11T10:15:30'
+    BalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+          format: decimal
+          example: 250.0

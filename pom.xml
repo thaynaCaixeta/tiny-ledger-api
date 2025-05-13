@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tackr.tinyledger</groupId>
-	<artifactId>api</artifactId>
+	<artifactId>tinyledger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tiny-ledger-api</name>
+	<name>tiny-ledger</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -67,6 +67,11 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>8.0.1.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.1.0</version>
 		</dependency>
 	</dependencies>
 
