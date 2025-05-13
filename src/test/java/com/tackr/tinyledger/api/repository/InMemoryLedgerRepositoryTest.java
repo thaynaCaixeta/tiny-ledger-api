@@ -60,6 +60,6 @@ class InMemoryLedgerRepositoryTest {
 
     @Test
     void shouldRejectNullTransaction() {
-        assertThrows(NullPointerException.class, () -> repository.save(null, BigDecimal.ZERO));
+        assertThrows(IllegalArgumentException.class, () -> repository.save(null, BigDecimal.ZERO));
     }
 }

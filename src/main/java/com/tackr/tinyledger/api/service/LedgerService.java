@@ -21,7 +21,7 @@ public class LedgerService {
         this.repository = repository;
     }
 
-    public BalanceResponse processTransaction(TransactionRequest request) {
+    public TransactionResponse processAndReturnTransaction(TransactionRequest request) {
         BigDecimal requestAmount = request.getAmount();
         TransactionType requestType = request.getType();
 
@@ -36,7 +36,7 @@ public class LedgerService {
         BigDecimal updatedBalance = calculateNewBalance(requestType, requestAmount, currentBalance);
         repository.save(newTransaction, updatedBalance);
 
-        return TransactionMapper.toBalanceResponse(newTransaction);
+        return TransactionMapper.toTransactionResponse(newTransaction);
     }
 
     public BalanceResponse getBalance() {
