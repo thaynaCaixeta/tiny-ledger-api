@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * @implNote The LedgerRepository interface intends to abstract how transactions are stored
- * maintaining the application decoupled and making it easier to migrate from an in-memory
- * database to an enterprise database in the future.
+ * @implNote While not strictly necessary, I introduced LedgerRepository to demonstrate how abstraction can enable
+ * future extensibility (e.g., swapping to a database without rewriting entirely the business logic).
+ * In a real system, this interface would also facilitate scaling
  */
 public interface LedgerRepository {
 

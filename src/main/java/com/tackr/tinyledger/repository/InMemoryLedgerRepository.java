@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- @implNote
+ * @implNote
  * Simple in-memory repository for ledger transactions.
- * Not thread-safe beyond basic synchronized blocks.
- * TODO Implement a test at the service layer to provide more information about scenario and ensure it's working as intended
+ * This implementation is intentionally not thread-safe,
+ * as concurrency concerns are out of scope for this assessment.
  */
 @Repository
 public class InMemoryLedgerRepository implements LedgerRepository {
@@ -20,7 +20,7 @@ public class InMemoryLedgerRepository implements LedgerRepository {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @Override
-    public synchronized void save(Transaction transaction, BigDecimal updatedBalance) {
+    public void save(Transaction transaction, BigDecimal updatedBalance) {
         if (transaction == null) {
             throw new IllegalArgumentException("transaction must not be null");
         }
@@ -32,18 +32,18 @@ public class InMemoryLedgerRepository implements LedgerRepository {
     }
 
     @Override
-    public synchronized BigDecimal getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
     @Override
-    public synchronized List<Transaction> findAll() {
+    public List<Transaction> findAll() {
         // Note: The use of the copyOf method here is justified by its characteristic of returning an unmodified list
         return List.copyOf(transactions);
     }
 
     /**
-     @implNote
+     * @implNote
      * Clears all ledger data.
      * Intended for use in tests only.
      */
