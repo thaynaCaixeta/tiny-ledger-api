@@ -5,6 +5,7 @@ import com.tackr.tinyledger.domain.TransactionType;
 import com.tackr.tinyledger.dto.request.TransactionRequest;
 import com.tackr.tinyledger.dto.response.BalanceResponse;
 import com.tackr.tinyledger.dto.response.TransactionResponse;
+import com.tackr.tinyledger.exception.InsufficientFundsException;
 import com.tackr.tinyledger.repository.LedgerRepository;
 import com.tackr.tinyledger.utils.TransactionMapper;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class LedgerService {
         BigDecimal currentBalance = repository.getBalance();
 
         if (!hasEnoughBalance(request, currentBalance)) {
-            throw new IllegalArgumentException("Transaction rejected: insufficient funds");
+            throw new InsufficientFundsException("Transaction rejected: insufficient funds");
         }
 
         Transaction newTransaction = new Transaction(requestType, requestAmount);

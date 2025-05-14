@@ -30,7 +30,8 @@ public class LedgerController {
             description = "Records a deposit or a withdraw and returns the registered transaction data",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Transaction successfully registered"),
-                    @ApiResponse(responseCode = "400", description = "Invalid request input or insufficient funds")
+                    @ApiResponse(responseCode = "400", description = "Invalid request received"),
+                    @ApiResponse(responseCode = "422", description = "Transaction failed due to insufficient funds")
             }
     )
     @PostMapping("/transaction")
