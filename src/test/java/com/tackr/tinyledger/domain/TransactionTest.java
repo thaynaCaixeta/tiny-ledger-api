@@ -11,7 +11,7 @@ class TransactionTest {
     @Test
     void shouldInitializeTransactionCorrectly() {
         BigDecimal amount = new BigDecimal("158.32");
-        Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount);
+        Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, TransactionStatus.COMPLETED);
 
         assertNotNull(transaction.getId());
         assertNotNull(transaction.getTimestamp());

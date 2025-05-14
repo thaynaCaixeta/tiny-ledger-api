@@ -16,11 +16,13 @@ public class Transaction {
     private final TransactionType type;
     private final BigDecimal amount; // Recommended for monetary values due to its higher accuracy than float and double
     private final LocalDateTime timestamp;
+    private final TransactionStatus status;
 
-    public Transaction(TransactionType type, BigDecimal amount) {
+    public Transaction(TransactionType type, BigDecimal amount, TransactionStatus status) {
         this.id = UUID.randomUUID();
         this.type = type;
         this.amount = amount;
         this.timestamp = LocalDateTime.now();
+        this.status = status;
     }
 }

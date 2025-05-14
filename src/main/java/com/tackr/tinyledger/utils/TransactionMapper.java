@@ -10,7 +10,8 @@ public class TransactionMapper {
         return new TransactionResponse(
                 transaction.getType(),
                 transaction.getAmount(),
-                DateUtils.toCustomFormat(transaction.getTimestamp())
+                DateUtils.toCustomFormat(transaction.getTimestamp()),
+                transaction.getStatus()
         );
     }
 

@@ -1,6 +1,7 @@
 package com.tackr.tinyledger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tackr.tinyledger.domain.TransactionStatus;
 import com.tackr.tinyledger.domain.TransactionType;
 import com.tackr.tinyledger.dto.request.TransactionRequest;
 import com.tackr.tinyledger.dto.response.BalanceResponse;
@@ -40,7 +41,7 @@ class LedgerControllerTest {
     @Test
     void shouldReturn201WhenRegisteringTransaction() throws Exception {
         TransactionResponse expectedResponse =
-                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("150.00"), DateUtils.toCustomFormat(LocalDateTime.now()));
+                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("150.00"), DateUtils.toCustomFormat(LocalDateTime.now()), TransactionStatus.COMPLETED);
         BDDMockito.given(ledgerService.processAndReturnTransaction(any())).willReturn(expectedResponse);
 
         TransactionRequest request = new TransactionRequest();
@@ -67,7 +68,7 @@ class LedgerControllerTest {
     @Test
     void shouldReturnTransactionHistory() throws Exception {
         List<TransactionResponse> history = List.of(
-                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("185.90"), DateUtils.toCustomFormat(LocalDateTime.now())));
+                new TransactionResponse(TransactionType.DEPOSIT, new BigDecimal("185.90"), DateUtils.toCustomFormat(LocalDateTime.now()), TransactionStatus.COMPLETED));
         BDDMockito.given(ledgerService.getTransactionHistory()).willReturn(history);
 
         mockMvc.perform(get("/api/v1/ledger/transaction/history"))

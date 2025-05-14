@@ -1,6 +1,7 @@
 package com.tackr.tinyledger.service;
 
 import com.tackr.tinyledger.domain.Transaction;
+import com.tackr.tinyledger.domain.TransactionStatus;
 import com.tackr.tinyledger.domain.TransactionType;
 import com.tackr.tinyledger.dto.request.TransactionRequest;
 import com.tackr.tinyledger.dto.response.BalanceResponse;
@@ -29,10 +30,14 @@ public class LedgerService {
         BigDecimal currentBalance = repository.getBalance();
 
         if (!hasEnoughBalance(request, currentBalance)) {
+            // Register the rejected transaction without updating the balance
+            Transaction newTransaction = new Transaction(requestType, requestAmount, TransactionStatus.REJECTED);
+            repository.save(newTransaction, currentBalance);
+
             throw new InsufficientFundsException("Transaction rejected: insufficient funds");
         }
 
-        Transaction newTransaction = new Transaction(requestType, requestAmount);
+        Transaction newTransaction = new Transaction(requestType, requestAmount, TransactionStatus.COMPLETED);
         BigDecimal updatedBalance = calculateNewBalance(request, currentBalance);
 
         repository.save(newTransaction, updatedBalance);
