@@ -3,6 +3,7 @@ package com.tackr.tinyledger.service;
 import com.tackr.tinyledger.domain.TransactionType;
 import com.tackr.tinyledger.dto.request.TransactionRequest;
 import com.tackr.tinyledger.dto.response.TransactionResponse;
+import com.tackr.tinyledger.exception.InsufficientFundsException;
 import com.tackr.tinyledger.repository.InMemoryLedgerRepository;
 import com.tackr.tinyledger.repository.LedgerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,19 +57,6 @@ class LedgerServiceTest {
     }
 
     @Test
-    void shouldThrowAnExceptionWhenWithdrawBiggerThanAvailableBalance() {
-        TransactionRequest request = new TransactionRequest();
-        request.setType(TransactionType.WITHDRAW);
-        request.setAmount(BigDecimal.TEN);
-
-        IllegalArgumentException expectedException =
-                assertThrows(IllegalArgumentException.class, () ->
-                    service.processAndReturnTransaction(request)
-                );
-        assertEquals("Transaction rejected: insufficient funds", expectedException.getMessage());
-    }
-
-    @Test
     void shouldReturnHistory() {
         TransactionRequest firstDeposit = new TransactionRequest();
         firstDeposit.setType(TransactionType.DEPOSIT);
@@ -101,5 +89,19 @@ class LedgerServiceTest {
 
         service.processAndReturnTransaction(request);
         assertEquals(new BigDecimal("350.00"), service.getBalance().balance());
+    }
+
+    @Test
+    void shouldThrowInsufficientFundsWhenWithdrawingMoreThanBalance() {
+        TransactionRequest withdraw = new TransactionRequest();
+        withdraw.setType(TransactionType.WITHDRAW);
+        withdraw.setAmount(new BigDecimal("145.75"));
+
+        InsufficientFundsException exception = assertThrows(
+                InsufficientFundsException.class,
+                () -> service.processAndReturnTransaction(withdraw)
+        );
+
+        assertEquals("Transaction rejected: insufficient funds", exception.getMessage());
     }
 }

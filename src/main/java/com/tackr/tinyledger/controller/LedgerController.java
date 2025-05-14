@@ -30,7 +30,8 @@ public class LedgerController {
             description = "Records a deposit or a withdraw and returns the registered transaction data",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Transaction successfully registered"),
-                    @ApiResponse(responseCode = "400", description = "Invalid request input or insufficient funds")
+                    @ApiResponse(responseCode = "400", description = "Invalid request received"),
+                    @ApiResponse(responseCode = "422", description = "Transaction failed due to insufficient funds")
             }
     )
     @PostMapping("/transaction")
@@ -39,14 +40,18 @@ public class LedgerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/transactions")
+    @Operation(
+            summary = "Retrieve the transactions history",
+            description = "Returns a list of all transactions registered in the ledger"
+    )
+    @GetMapping("/transaction/history")
     public ResponseEntity<List<TransactionResponse>> retrieveHistory() {
         return ResponseEntity.ok(ledgerService.getTransactionHistory());
     }
 
     @Operation(
-            summary = "Retrieve the transactions history",
-            description = "Returns a list of all transactions registered in the ledger"
+            summary = "Retrieve the account balance",
+            description = "Returns the total balance of the ledger account"
     )
     @GetMapping("/balance")
     public ResponseEntity<BalanceResponse> retrieveBalance() {
