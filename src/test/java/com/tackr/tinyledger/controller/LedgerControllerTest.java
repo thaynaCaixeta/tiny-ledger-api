@@ -56,13 +56,16 @@ class LedgerControllerTest {
     }
 
     @Test
-    void shouldReturn400WhenInvalidTransactionRequestIsSent() throws Exception {
-        TransactionRequest invalidRequest = new TransactionRequest();
+    void shouldReturn400AndErrorResponseWhenJsonIsInvalid() throws Exception {
+        String malformedJson = "{ \"amount\": \"invalidNumber\", \"type\": \"DEPOSIT\" }";
 
         mockMvc.perform(post("/api/v1/ledger/transaction")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest());
+                        .content(malformedJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Malformed JSON request or invalid data types"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.path").value("/api/v1/ledger/transaction"));
     }
 
     @Test

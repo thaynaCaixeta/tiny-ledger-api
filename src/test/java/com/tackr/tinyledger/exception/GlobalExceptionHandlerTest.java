@@ -6,12 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageConversionException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -37,29 +34,22 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void shouldHandleRequestValidationException() {
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.getFieldErrors()).thenReturn(List.of(
-                new FieldError("transactionRequest", "amount", "must be greater than zero"),
-                new FieldError("transactionRequest", "type", "must not be null")
-        ));
-
-        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
-        when(ex.getBindingResult()).thenReturn(bindingResult);
-
+    void shouldHandleMessageConversionException() {
+        HttpMessageConversionException ex = new HttpMessageConversionException("Unparseable JSON");
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURI()).thenReturn("/api/v1/ledger/transactions");
 
-        ResponseEntity<ApiErrorResponse> response = handler.handleRequestValidationException(ex, request);
+        ResponseEntity<ApiErrorResponse> response = handler.handleMessageConversionException(ex, request);
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
         ApiErrorResponse body = response.getBody();
         assertNotNull(body);
-        assertTrue(body.message().contains("Validation failed"));
-        assertTrue(body.message().contains("amount: must be greater than zero"));
-        assertTrue(body.message().contains("type: must not be null"));
+        assertEquals("Malformed JSON request or invalid data types", body.message());
         assertEquals("/api/v1/ledger/transactions", body.path());
+        assertEquals(400, body.statusCode());
     }
+
 
     @Test
     void shouldHandleGenericException() {
